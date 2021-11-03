@@ -1,5 +1,15 @@
 # Compiled class file
 *.class
+target
+build
+
+# Eclipse files
+.settings
+.project
+.classpath
+
+# IDEA files
+.idea
 
 # Log file
 *.log
