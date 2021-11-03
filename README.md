@@ -1,3 +1,5 @@
+![example workflow](https://github.com/remonvv/bodyparam/actions/workflows/maven.yml/badge.svg)
+
 # @BodyParam
 Adds support for @BodyParam annotation within Spring Boot web controllers to allow controller methods to use request body values directly as method parameters.  
 
@@ -76,7 +78,7 @@ void testMethod(@BodyParam(path = "optionalValue", defaultValue = "default") Str
 }
 ```
 
-If the code is compiled with the javac parameter `-parameters` the compiler will add method parameter names to the class files. In that case `@BodyParam` is able to use that parameter name as the default path for `@BodyParam` annotation method parameters. This allows for the following simplification :
+If the code is compiled with the javac parameter `-parameters` the compiler will add method parameter names to the class files. In that case `@BodyParam` is able to use that parameter name as the default path for `@BodyParam` annotation method parameters. This allows for the following simplification :  
 *JSON*
 ```json
 {
