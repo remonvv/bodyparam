@@ -1,4 +1,4 @@
-![example workflow](https://github.com/remonvv/bodyparam/actions/workflows/maven.yml/badge.svg)
+![Build](https://github.com/remonvv/bodyparam/actions/workflows/maven.yml/badge.svg)
 ![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.remonvv/bodyparam/badge.svg)
 
 # @BodyParam
