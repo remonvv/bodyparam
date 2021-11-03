@@ -17,7 +17,7 @@ Currently the request body parser supports the following HTTP media types :
 
 *Java Code*
 ```java
-@PostMapping("/create")
+@PostMapping
 void testMethod(
 	@BodyParam(path = "exampleString") String stringValue,
 	@BodyParam(path = "exampleNumber") int integerValue) {
@@ -37,7 +37,7 @@ void testMethod(
 
 *Java Code*
 ```java
-@PostMapping("/create")
+@PostMapping
 void testMethod(@BodyParam(path = "parent.child") String value) {
 	System.out.println("string = " + value);
 }
@@ -52,7 +52,7 @@ void testMethod(@BodyParam(path = "parent.child") String value) {
 
 *Java Code*
 ```java
-@PostMapping("/create")
+@PostMapping
 void testMethod(
 	@BodyParam(path = "requiredValue") String requiredValue,
 	@BodyParam(path = "optionalValue", required = false) String optionalValue) {
@@ -70,8 +70,26 @@ void testMethod(
 
 *Java Code*
 ```java
-@PostMapping("/create")
+@PostMapping
 void testMethod(@BodyParam(path = "optionalValue", defaultValue = "default") String optionalValue) {
 	System.out.println("optional value = " + optionalValue);
+}
+```
+
+If the code is compiled with the javac parameter `-parameters` the compiler will add method parameter names to the class files. In that case `@BodyParam` is able to use that parameter name as the default path for `@BodyParam` annotation method parameters. This allows for the following simplification :
+*JSON*
+```json
+{
+    "field":"value"
+}
+```
+
+Note below that no explicit path is defined. The parameter name resolver will attempt to get the parameter name (`field` in this example) directly from the compiled class file and use that name to search for a value in the request body.
+*Java Code*
+```java
+@PostMapping
+void testMethod(
+	@BodyParam String field) {
+	System.out.println("field value = " + field);
 }
 ```
