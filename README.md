@@ -1,4 +1,5 @@
 ![example workflow](https://github.com/remonvv/bodyparam/actions/workflows/maven.yml/badge.svg)
+![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.remonvv/bodyparam/badge.svg)
 
 # @BodyParam
 Adds support for @BodyParam annotation within Spring Boot web controllers to allow controller methods to use request body values directly as method parameters.  
