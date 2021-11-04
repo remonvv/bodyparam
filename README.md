@@ -2,7 +2,7 @@
 ![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.remonvv/bodyparam/badge.svg)
 
 # @BodyParam
-Adds support for @BodyParam annotation within Spring Boot web controllers to allow controller methods to use request body values directly as method parameters.  
+Adds support for `@BodyParam` annotation within Spring Boot web controllers to allow controller methods to use request body values directly as method parameter values without having to define a request body DTO class.  
 
 Currently the request body parser supports the following HTTP media types :  
 * application\json
@@ -16,7 +16,13 @@ Currently the request body parser supports the following HTTP media types :
     "exampleNumber":1
 }
 ```
-
+*XML*
+```xml
+<root><!--Arbitrary name for root node-->
+    <exampleString>value</exampleString>
+    <exampleNumber>1</exampleNumber>
+</root>
+```
 
 *Java Code*
 ```java
