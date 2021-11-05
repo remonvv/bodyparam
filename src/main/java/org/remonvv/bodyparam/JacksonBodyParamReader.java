@@ -22,6 +22,12 @@ public abstract class JacksonBodyParamReader extends BodyParamReader {
 	public Optional<Object> readParam(String paramName, Type paramType, String body,
 			NameMatchingMode nameMatchingMode) {
 
+		if (paramName == null)
+			throw new IllegalArgumentException("Parameter name provided was null");
+
+		if (paramName.isBlank())
+			throw new IllegalArgumentException("Parameter name provided was blank");
+
 		final ObjectMapper objectMapper = getObjectMapper();
 		try {
 			JsonNode jsonTree = getObjectMapper().readTree(body);
@@ -35,7 +41,7 @@ public abstract class JacksonBodyParamReader extends BodyParamReader {
 				while (jsonFields.hasNext()) {
 					String jsonFieldName = jsonFields.next();
 
-					if (nameMatcher.isNameMatching(jsonFieldName, paramNamePart, nameMatchingMode))
+					if (NameMatcher.isNameMatching(jsonFieldName, paramNamePart, nameMatchingMode))
 						if (isLastPart) {
 							JsonNode jsonValue = jsonTree.get(jsonFieldName);
 

@@ -1,7 +1,7 @@
 package org.remonvv.bodyparam;
 
 final class NameMatcher {
-	boolean isNameMatching(String a, String b, NameMatchingMode nameMatchingMode) {
+	static boolean isNameMatching(String a, String b, NameMatchingMode nameMatchingMode) {
 		switch (nameMatchingMode) {
 			case EXACT:
 				return a.equals(b);
@@ -15,7 +15,7 @@ final class NameMatcher {
 		}
 	}
 
-	private boolean equalsIgnoreCaseAndNonLiterals(String a, String b) {
+	private static boolean equalsIgnoreCaseAndNonLiterals(String a, String b) {
 		String simplifiedA = a.replaceAll("[^a-zA-Z0-9]", "");
 		String simplifiedB = b.replaceAll("[^a-zA-Z0-9]", "");
 
