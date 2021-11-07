@@ -2,13 +2,37 @@
 ![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.remonvv/bodyparam/badge.svg)
 
 # @BodyParam
-Adds support for `@BodyParam` annotation within Spring Boot web controllers to allow controller methods to use request body values directly as method parameter values without having to define a request body DTO class.  
+Adds support for `@BodyParam` annotation within Spring Boot web controllers to allow controller methods to use request body values directly as method parameter values without having to use the `@RequestBody` annotation and define an accompanying request body DTO class.
 
 Currently the request body parser supports the following HTTP media types :  
-* application\json
-* application\xml
+* `application\json`
+* `application\xml`
 
-## Examples
+Please refer to the relevant data format section for details on how the various data formats are supported.
+
+## Installation
+To use the `@BodyParam` annotation you first have to add the library to your project. You can do so by copying the snippets below into your Maven `pom.xml` or Gradle `build.gradle` or equivalent files.
+
+### Maven
+```xml
+<dependency>
+    <groupId>org.remonvv</groupId>
+    <artifactId>bodyparam</artifactId>
+    <version1.0.2-SNAPSHOT</version>
+</dependency>
+
+```
+
+### Gradle
+```gradle
+dependencies {
+    implementation "org.remonvv:bodyparam:1.0.2-SNAPSHOT"
+}
+```
+
+This allows your Spring application to use the `@BodyParam` annotation in your web controllers. Make sure you update your projects in your IDE if needed to ensure the @BodyParam library dependency is in your classpath.
+
+## Usage
 *JSON*
 ```json
 {
