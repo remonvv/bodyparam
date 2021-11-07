@@ -11,13 +11,13 @@ import org.junit.jupiter.api.Test;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class JacksonBodyParamReaderTest {
+public class BodyParamReaderTest {
 
-	JacksonBodyParamReader sut;
+	BodyParamReader sut;
 
 	@BeforeEach
 	void beforeEach() {
-		sut = new JsonBodyParamReader();
+		this.sut = new JsonBodyParamReader();
 	}
 
 	@Test
@@ -25,22 +25,21 @@ public class JacksonBodyParamReaderTest {
 		String json = mapToJsonString(Map.of("test", "string"));
 
 		assertThrows(IllegalArgumentException.class,
-				() -> sut.readParam("", String.class, json, NameMatchingMode.EXACT));
+				() -> this.sut.readParam("", String.class, json, NameMatchingMode.EXACT));
 	}
 
 	@Test
 	void readParam_throws_exception_if_paramName_is_null() {
 		String json = mapToJsonString(Map.of("test", "string"));
 
-		assertThrows(IllegalArgumentException.class,
-				() -> sut.readParam(null, String.class, json, NameMatchingMode.EXACT));
+		assertThrows(IllegalArgumentException.class, () -> this.sut.readParam(null,
+				String.class, json, NameMatchingMode.EXACT));
 	}
 
 	static String mapToJsonString(Map<String, Object> map) {
 		try {
 			return new ObjectMapper().writeValueAsString(map);
-		}
-		catch (JsonProcessingException e) {
+		} catch (JsonProcessingException e) {
 			fail("Could not construct JSON string from map " + map.toString());
 			return null;
 		}

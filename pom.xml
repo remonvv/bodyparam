@@ -7,7 +7,7 @@
 
 	<groupId>org.remonvv</groupId>
 	<artifactId>bodyparam</artifactId>
-	<version>1.0.2-SNAPSHOT</version>
+	<version>0.1.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>Spring @BodyParam</name>
@@ -73,6 +73,13 @@
 	</dependencies>
 
 	<build>
+		<plugins>
+			<plugin>
+				<groupId>io.spring.javaformat</groupId>
+				<artifactId>spring-javaformat-maven-plugin</artifactId>
+				<version>0.0.6</version>
+			</plugin>
+		</plugins>
 	</build>
 
 </project>
