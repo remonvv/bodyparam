@@ -47,7 +47,7 @@ public class BodyParamArgumentResolver implements HandlerMethodArgumentResolver 
 		Optional<Object> defaultValueOptional = Optional
 				.ofNullable(bodyParamAnnotation.defaultValue())
 				.filter(s -> !s.equals(ValueConstants.DEFAULT_NONE))
-				.map(s -> stringToSimpleJavaType(parameter.getParameterType(), s));
+				.map(s -> stringToDefaultValue(parameter.getParameterType(), s));
 
 		Optional<Object> paramValueOptional = bodyParamReader
 				.readParam(paramPath, paramType, requestBodyString,
@@ -114,7 +114,7 @@ public class BodyParamArgumentResolver implements HandlerMethodArgumentResolver 
 								+ BodyParam.class.getSimpleName() + " annotation"));
 	}
 
-	static Object stringToSimpleJavaType(Class<?> clazz, String value) {
+	static Object stringToDefaultValue(Class<?> clazz, String value) {
 		if (Boolean.class == clazz)
 			return Boolean.parseBoolean(value);
 		if (Byte.class == clazz)
