@@ -18,9 +18,8 @@ To use the `@BodyParam` annotation you first have to add the library to your pro
 <dependency>
     <groupId>org.remonvv</groupId>
     <artifactId>bodyparam</artifactId>
-    <version1.0.2-SNAPSHOT</version>
+    <version>1.0.2-SNAPSHOT</version>
 </dependency>
-
 ```
 
 ### Gradle
@@ -29,6 +28,13 @@ dependencies {
     implementation "org.remonvv:bodyparam:1.0.2-SNAPSHOT"
 }
 ```
+
+## Getting Started
+Once you added the library as a dependency to your project you can use the `@BodyParam` annotation in your Spring web controllers. Simply add the annotation in front of any method parameter and the library will attempt to find that value in the request body and inject that value into your method parameter.
+
+| JSON | XML |
+| --- | --- |
+| ```{"username":"William123"}``` | ```<ignoredtest2``` |
 
 This allows your Spring application to use the `@BodyParam` annotation in your web controllers. Make sure you update your projects in your IDE if needed to ensure the @BodyParam library dependency is in your classpath.
 
