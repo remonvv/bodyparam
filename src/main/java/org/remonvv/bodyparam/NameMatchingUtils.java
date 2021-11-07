@@ -1,6 +1,10 @@
 package org.remonvv.bodyparam;
 
-final class NameMatcher {
+public abstract class NameMatchingUtils {
+	private NameMatchingUtils() {
+		/* prevent instantiation */
+	}
+
 	static boolean isNameMatching(String a, String b, NameMatchingMode nameMatchingMode) {
 		switch (nameMatchingMode) {
 			case EXACT:

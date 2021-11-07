@@ -18,7 +18,7 @@ public @interface BodyParam {
 
 	/**
 	 * Specifies a default value if no value was provided in the request body for
-	 * this parameter. If a default value is specified then optional=true is
+	 * this parameter. If a default value is specified then requires=false is
 	 * implied. Only Java primitive types, String values and enum values are allowed
 	 * as default values.
 	 */

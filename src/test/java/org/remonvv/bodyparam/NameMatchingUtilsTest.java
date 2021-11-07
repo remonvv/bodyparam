@@ -5,7 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
-public class NameMatcherTest {
+public class NameMatchingUtilsTest {
 
 	@Test
 	void isNameMatching_does_not_match_case_differences_in_exact_mode() {
@@ -13,7 +13,7 @@ public class NameMatcherTest {
 		String a = "case";
 		String b = "Case";
 
-		assertFalse(NameMatcher.isNameMatching(a, b, NameMatchingMode.EXACT));
+		assertFalse(NameMatchingUtils.isNameMatching(a, b, NameMatchingMode.EXACT));
 	}
 
 	@Test
@@ -22,7 +22,7 @@ public class NameMatcherTest {
 		String a = "nonalphanumeric";
 		String b = "non_alpha_numeric";
 
-		assertFalse(NameMatcher.isNameMatching(a, b, NameMatchingMode.EXACT));
+		assertFalse(NameMatchingUtils.isNameMatching(a, b, NameMatchingMode.EXACT));
 	}
 
 	@Test
@@ -31,7 +31,7 @@ public class NameMatcherTest {
 		String a = "nonalphanumeric";
 		String b = "non_alpha_numeric";
 
-		assertFalse(NameMatcher.isNameMatching(a, b, NameMatchingMode.IGNORE_CASE));
+		assertFalse(NameMatchingUtils.isNameMatching(a, b, NameMatchingMode.IGNORE_CASE));
 	}
 
 	@Test
@@ -40,7 +40,7 @@ public class NameMatcherTest {
 		String a = "one";
 		String b = "other";
 
-		assertFalse(NameMatcher.isNameMatching(a, b, NameMatchingMode.EXACT));
+		assertFalse(NameMatchingUtils.isNameMatching(a, b, NameMatchingMode.EXACT));
 	}
 
 	@Test
@@ -49,7 +49,7 @@ public class NameMatcherTest {
 		String a = "one";
 		String b = "other";
 
-		assertFalse(NameMatcher.isNameMatching(a, b, NameMatchingMode.IGNORE_CASE_AND_NON_ALPHA_NUMERIC));
+		assertFalse(NameMatchingUtils.isNameMatching(a, b, NameMatchingMode.IGNORE_CASE_AND_NON_ALPHA_NUMERIC));
 	}
 
 	@Test
@@ -58,7 +58,7 @@ public class NameMatcherTest {
 		String a = "one";
 		String b = "other";
 
-		assertFalse(NameMatcher.isNameMatching(a, b, NameMatchingMode.IGNORE_CASE));
+		assertFalse(NameMatchingUtils.isNameMatching(a, b, NameMatchingMode.IGNORE_CASE));
 	}
 
 	@Test
@@ -67,7 +67,7 @@ public class NameMatcherTest {
 		String a = "case";
 		String b = "Case";
 
-		assertTrue(NameMatcher.isNameMatching(a, b, NameMatchingMode.IGNORE_CASE));
+		assertTrue(NameMatchingUtils.isNameMatching(a, b, NameMatchingMode.IGNORE_CASE));
 	}
 
 	@Test
@@ -76,7 +76,7 @@ public class NameMatcherTest {
 		String a = "exact";
 		String b = "exact";
 
-		assertTrue(NameMatcher.isNameMatching(a, b, NameMatchingMode.EXACT));
+		assertTrue(NameMatchingUtils.isNameMatching(a, b, NameMatchingMode.EXACT));
 	}
 
 	@Test
@@ -85,7 +85,7 @@ public class NameMatcherTest {
 		String a = "exact";
 		String b = "exact";
 
-		assertTrue(NameMatcher.isNameMatching(a, b, NameMatchingMode.IGNORE_CASE));
+		assertTrue(NameMatchingUtils.isNameMatching(a, b, NameMatchingMode.IGNORE_CASE));
 	}
 
 	@Test
@@ -94,6 +94,6 @@ public class NameMatcherTest {
 		String a = "nonalphanumeric";
 		String b = "non_alpha_numeric";
 
-		assertTrue(NameMatcher.isNameMatching(a, b, NameMatchingMode.IGNORE_CASE_AND_NON_ALPHA_NUMERIC));
+		assertTrue(NameMatchingUtils.isNameMatching(a, b, NameMatchingMode.IGNORE_CASE_AND_NON_ALPHA_NUMERIC));
 	}
 }

@@ -48,14 +48,14 @@ public class BodyParamArgumentResolver implements HandlerMethodArgumentResolver 
 								+ BodyParam.class.getSimpleName() + " annotation"));
 
 		String requestBodyString = getBodyAsString(servletWebRequest);
-		String paramName = getArgumentPath(bodyParamAnnotation, parameter);
+		String paramPath = getParamPath(bodyParamAnnotation, parameter);
 		Type paramType = parameter.getGenericParameterType();
 
 		Optional<Object> defaultValueOptional = Optional.ofNullable(bodyParamAnnotation.defaultValue())
 				.filter(s -> !s.equals(ValueConstants.DEFAULT_NONE))
 				.map(s -> stringToSimpleJavaType(parameter.getParameterType(), s));
 
-		Optional<Object> paramValueOptional = bodyParamReader.readParam(paramName,
+		Optional<Object> paramValueOptional = bodyParamReader.readParam(paramPath,
 				paramType,
 				requestBodyString,
 				bodyParamAnnotation.nameMatchingMode())
@@ -68,8 +68,8 @@ public class BodyParamArgumentResolver implements HandlerMethodArgumentResolver 
 		// body or a default value should have been provided.
 		if (required && paramValueOptional.isEmpty())
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-					"Could not find any fields in request body  matching parameter name "
-							+ paramName
+					"Could not find any fields in request body matching parameter name "
+							+ paramPath
 							+ " using the name matching mode " + bodyParamAnnotation.nameMatchingMode());
 
 		// We can assume we either have a value provided, a default value provided or
@@ -80,22 +80,6 @@ public class BodyParamArgumentResolver implements HandlerMethodArgumentResolver 
 	@Override
 	public boolean supportsParameter(MethodParameter parameter) {
 		return parameter.hasParameterAnnotation(BodyParam.class);
-	}
-
-	private String getArgumentPath(BodyParam bodyParam, MethodParameter parameter) {
-		String definedArgumentPath = bodyParam.path();
-
-		// If no argument name is explicitly defined, attempt to use parameter name
-		if (definedArgumentPath.equals(ValueConstants.DEFAULT_NONE))
-			if (parameter.getParameterName() != null)
-				return parameter.getParameterName();
-			else
-				throw new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR,
-						"Cannot resolve parameter path in controller method " + parameter.getMethod().getName()
-								+ " at index " + parameter.getParameterIndex()
-								+ " because no name was explicitly defined and javac \"-parameters\" compile option not used");
-
-		return definedArgumentPath;
 	}
 
 	private String getBodyAsString(ServletWebRequest webRequest) throws IOException {
@@ -109,6 +93,22 @@ public class BodyParamArgumentResolver implements HandlerMethodArgumentResolver 
 		String contentType = httpRequest.getContentType();
 
 		return MediaType.parseMediaType(contentType);
+	}
+
+	private String getParamPath(BodyParam bodyParam, MethodParameter parameter) {
+		String definedArgumentPath = bodyParam.path();
+
+		// If no argument name is explicitly defined, attempt to use parameter name
+		if (definedArgumentPath.equals(ValueConstants.DEFAULT_NONE))
+			if (parameter.getParameterName() != null)
+				return parameter.getParameterName();
+			else
+				throw new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR,
+						"Cannot resolve parameter path in controller method " + parameter.getMethod().getName()
+								+ " at index " + parameter.getParameterIndex()
+								+ " because no name was explicitly defined and javac \"-parameters\" compile option not used");
+
+		return definedArgumentPath;
 	}
 
 	private static Object stringToSimpleJavaType(Class<?> clazz, String value) {

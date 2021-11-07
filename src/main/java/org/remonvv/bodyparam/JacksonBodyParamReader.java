@@ -41,7 +41,7 @@ public abstract class JacksonBodyParamReader extends BodyParamReader {
 				while (jsonFields.hasNext()) {
 					String jsonFieldName = jsonFields.next();
 
-					if (NameMatcher.isNameMatching(jsonFieldName, paramNamePart, nameMatchingMode))
+					if (NameMatchingUtils.isNameMatching(jsonFieldName, paramNamePart, nameMatchingMode))
 						if (isLastPart) {
 							JsonNode jsonValue = jsonTree.get(jsonFieldName);
 
