@@ -21,7 +21,7 @@
  */
 package org.remonvv.bodyparam;
 
-import static org.remonvv.bodyparam.NameMatchingMode.EXACT;
+import static org.remonvv.bodyparam.NameMatchingMode.DEFAULT;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -74,7 +74,7 @@ public @interface BodyParam {
 	 * case differences and ignore all non alpha numeric characters. For more strict
 	 * matching use STRICT or IGNORE_CASE instead.
 	 */
-	NameMatchingMode nameMatchingMode() default EXACT;
+	NameMatchingMode nameMatchingMode() default DEFAULT;
 
 	/**
 	 * Defines the path to the value within the request body that is to be read and
