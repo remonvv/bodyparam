@@ -63,6 +63,7 @@ public class BodyParamArgumentResolver implements HandlerMethodArgumentResolver 
 
 		BodyParam bodyParamAnnotation = parameter.getParameterAnnotation(BodyParam.class);
 		ServletWebRequest servletWebRequest = (ServletWebRequest) webRequest;
+		NameMatchingMode nameMatchingMode = determineNameMatchingMode(parameter);
 
 		MediaType mediaType = getMediaType(servletWebRequest);
 
@@ -74,8 +75,10 @@ public class BodyParamArgumentResolver implements HandlerMethodArgumentResolver 
 				.filter(s -> !s.equals(ValueConstants.DEFAULT_NONE))
 				.map(s -> stringToDefaultValue(parameter.getParameterType(), s));
 
-		Optional<Object> paramValueOptional = this.bodyParamReader.readBodyParam(paramPath, paramType, requestBodyString,
-				bodyParamAnnotation.nameMatchingMode(), selectRequestBodyMapper(mediaType)).map(Optional::of)
+		Optional<Object> paramValueOptional = this.bodyParamReader
+				.readBodyParam(paramPath, paramType, requestBodyString,
+						nameMatchingMode, selectRequestBodyMapper(mediaType))
+				.map(Optional::of)
 				.orElse(defaultValueOptional);
 
 		boolean required = bodyParamAnnotation.required() && defaultValueOptional.isEmpty();
@@ -84,8 +87,8 @@ public class BodyParamArgumentResolver implements HandlerMethodArgumentResolver 
 		// body or a default value should have been provided.
 		if (required && paramValueOptional.isEmpty())
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-					"Could not find any fields in request body matching parameter name " + paramPath
-							+ " using the name matching mode " + bodyParamAnnotation.nameMatchingMode());
+					"Could not find any fields in request body matching parameter path " + paramPath
+							+ " using the name matching mode " + nameMatchingMode);
 
 		// We can assume we either have a value provided, a default value provided or
 		// the value is optional (required
@@ -95,6 +98,42 @@ public class BodyParamArgumentResolver implements HandlerMethodArgumentResolver 
 	@Override
 	public boolean supportsParameter(MethodParameter parameter) {
 		return parameter.hasParameterAnnotation(BodyParam.class);
+	}
+
+	private NameMatchingMode determineNameMatchingMode(MethodParameter parameter) {
+		BodyParam bodyParamAnnotation = parameter.getParameterAnnotation(BodyParam.class);
+
+		// If name matching mode explicitly defined for parameter, use that
+		if (bodyParamAnnotation.nameMatchingMode() != NameMatchingMode.DEFAULT)
+			return bodyParamAnnotation.nameMatchingMode();
+
+		// Check if method is annotated with name matching annotation first
+		if (parameter.hasMethodAnnotation(NameMatching.class)) {
+			NameMatchingMode modeParam = parameter.getMethodAnnotation(NameMatching.class).mode();
+			NameMatchingMode valueParam = parameter.getMethodAnnotation(NameMatching.class).value();
+
+			if (modeParam != NameMatching.DEFAULT_MODE)
+				return modeParam;
+			if (valueParam != NameMatching.DEFAULT_MODE)
+				return valueParam;
+		}
+
+		Class<?> declaringClass = parameter.getDeclaringClass();
+
+		// Finally, check if the type has a name matching annotation
+		if (declaringClass.isAnnotationPresent(NameMatching.class)) {
+			NameMatchingMode modeParam = declaringClass.getAnnotation(NameMatching.class).mode();
+			NameMatchingMode valueParam = declaringClass.getAnnotation(NameMatching.class).value();
+
+			if (modeParam != NameMatching.DEFAULT_MODE)
+				return modeParam;
+			if (valueParam != NameMatching.DEFAULT_MODE)
+				return valueParam;
+		}
+
+		// No overrides found, so use default
+		return NameMatching.DEFAULT_MODE;
+
 	}
 
 	private String getBodyAsString(ServletWebRequest webRequest) throws IOException {

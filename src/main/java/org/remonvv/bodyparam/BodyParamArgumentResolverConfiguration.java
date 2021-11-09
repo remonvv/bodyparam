@@ -32,14 +32,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @ConditionalOnWebApplication
 public class BodyParamArgumentResolverConfiguration implements WebMvcConfigurer {
 
-	private final BodyParamReader bodyParamReader;
-
-	public BodyParamArgumentResolverConfiguration(BodyParamReader bodyParamReader) {
-		this.bodyParamReader = bodyParamReader;
-	}
-
 	@Override
 	public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
-		resolvers.add(new BodyParamArgumentResolver(this.bodyParamReader));
+		resolvers.add(new BodyParamArgumentResolver(new BodyParamReader()));
 	}
 }

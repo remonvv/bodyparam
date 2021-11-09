@@ -21,30 +21,35 @@
  */
 package org.remonvv.bodyparam;
 
+import static org.remonvv.bodyparam.NameMatchingMode.EXACT;
+
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+import org.springframework.core.annotation.AliasFor;
+
 /**
- * <p>
- * Name matching mode is used to configure the criteria on which a field in the
- * request body is matched against the given path. There are three modes:
- * {@code EXACT}, {@code IGNORE_CASE} and
- * {@code IGNORE_CASE_AND_NON_ALPHA_NUMERIC}.
- *
- * <p>
- * {@code EXACT} based matching requires the body request field name to exactly
- * match the given path.
- *
- * <p>
- * {@code IGNORE_CASE} provides case insensitive matching.
- *
- * <p>
- * {@code IGNORE_CASE_AND_NON_ALPHA_NUMERIC} is both case insensitive and
- * ignores any characters that are not alpha numeric characters.
  *
  * @author Remon van Vliet
  */
-public enum NameMatchingMode {
 
-	DEFAULT,
-	EXACT,
-	IGNORE_CASE,
-	IGNORE_CASE_AND_NON_ALPHA_NUMERIC
+@Target({
+		ElementType.TYPE, ElementType.METHOD
+})
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+public @interface NameMatching {
+	final static NameMatchingMode DEFAULT_MODE = EXACT;
+
+	@AliasFor("value")
+	NameMatchingMode mode() default EXACT;
+
+	/**
+	 * Alias for the mode attribute.
+	 */
+	@AliasFor("mode")
+	NameMatchingMode value() default EXACT;
 }
