@@ -38,19 +38,24 @@ import org.springframework.web.bind.annotation.ValueConstants;
  * require request body values to be injected into the parameter. This
  * annotation works conceptually similar to {@code @PathVariable} and
  * {@code @QueryParam}.
+ * </p>
  *
  * <p>
  * {@code @BodyParam} supports reading from request bodies that use either JSON
  * or XML data formats.
+ * </p>
  *
+ * <h2>JSON</h2>
  * <p>
- * <h1>JSON</h1> JSON request bodies are expected to be valid JSON.
+ * JSON request bodies are expected to be valid JSON.
+ * </p>
  *
+ * <h2>XML</h2>
  * <p>
- * <h1>XML</h1> XML request bodies are expected to be valid XML. Injecting XML
- * tag attributes is not supported.
+ * XML request bodies are expected to be valid XML. Injecting XML tag attributes
+ * is not supported.
+ * </p>
  *
- * <p>
  *
  * @author Remon van Vliet
  */
