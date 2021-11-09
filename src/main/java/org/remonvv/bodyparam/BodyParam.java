@@ -21,7 +21,7 @@
  */
 package org.remonvv.bodyparam;
 
-import static org.remonvv.bodyparam.NameMatchingMode.IGNORE_CASE_AND_NON_ALPHA_NUMERIC;
+import static org.remonvv.bodyparam.NameMatchingMode.EXACT;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -50,6 +50,7 @@ import org.springframework.web.bind.annotation.ValueConstants;
  * <h1>XML</h1> XML request bodies are expected to be valid XML. Injecting XML
  * tag attributes is not supported.
  *
+ * <p>
  *
  * @author Remon van Vliet
  */
@@ -73,7 +74,7 @@ public @interface BodyParam {
 	 * case differences and ignore all non alpha numeric characters. For more strict
 	 * matching use STRICT or IGNORE_CASE instead.
 	 */
-	NameMatchingMode nameMatchingMode() default IGNORE_CASE_AND_NON_ALPHA_NUMERIC;
+	NameMatchingMode nameMatchingMode() default EXACT;
 
 	/**
 	 * Defines the path to the value within the request body that is to be read and

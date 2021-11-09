@@ -1,43 +1,57 @@
+/**
+ * Copyright (c) 2021 the original author or authors.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
 package org.remonvv.bodyparam;
 
 import java.lang.reflect.Type;
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
+import java.util.stream.Collectors;
 
-import org.springframework.http.MediaType;
 import org.springframework.util.Assert;
 
-public abstract class BodyParamReader {
+public class BodyParamReader {
 
 	@SuppressWarnings("unchecked")
-	public Optional<Object> readParam(String paramName, Type paramType,
-			String requestBody, NameMatchingMode nameMatchingMode) {
+	public Optional<Object> readBodyParam(String paramPath, Type paramType, String requestBody,
+			NameMatchingMode nameMatchingMode, RequestBodyMapper requestBodyMapper) {
 
-		Assert.notNull(paramName, "Parameter name provided was null");
+		List<String> paramPathParts = validateAndCompileParamPath(paramPath);
+		List<String> currentPath = new ArrayList<>(paramPathParts.size());
 
-		if (paramName.isBlank())
-			throw new IllegalArgumentException("Parameter name provided was blank");
+		Map<String, Object> bodyMap = requestBodyMapper.mapRequestBody(requestBody);
 
-		Map<String, Object> bodyMap = mapRequestBody(requestBody);
-
-		final String[] paramNameParts = paramName.split("\\.");
-
-		Set<String> currentPath = new HashSet<>();
-
-		for (int i = 0; i < paramNameParts.length; i++) {
-			String paramNamePart = paramNameParts[i];
-			boolean isLastPart = i == paramNameParts.length - 1;
+		for (int i = 0; i < paramPathParts.size(); i++) {
+			String paramNamePart = paramPathParts.get(i);
+			boolean isLastPart = i == paramPathParts.size() - 1;
 			currentPath.add(paramNamePart);
 
 			for (String key : bodyMap.keySet())
-				if (NameMatchingUtils.isNameMatching(key, paramNamePart,
-						nameMatchingMode)) {
+				if (NameMatchingUtils.isNameMatching(key, paramNamePart, nameMatchingMode)) {
 					if (isLastPart) {
 						Object value = bodyMap.get(key);
-						Object convertedValue = convertValueToTargetType(paramType,
-								value);
+						Object convertedValue = requestBodyMapper.convertValue(paramType, value);
 
 						return Optional.ofNullable(convertedValue);
 					}
@@ -45,7 +59,8 @@ public abstract class BodyParamReader {
 					Object childValue = bodyMap.get(key);
 
 					if (!Map.class.isAssignableFrom(childValue.getClass()))
-						throw new IllegalArgumentException("Value \"");
+						throw new IllegalArgumentException(
+								"Value found at \"" + String.join(".", currentPath) + "\" is not an object");
 
 					bodyMap = (Map<String, Object>) bodyMap.get(key);
 				}
@@ -54,9 +69,26 @@ public abstract class BodyParamReader {
 		return Optional.empty();
 	}
 
-	abstract Object convertValueToTargetType(Type paramType, Object value);
+	private List<String> validateAndCompileParamPath(String paramPath) {
 
-	abstract Map<String, Object> mapRequestBody(String body);
+		Assert.notNull(paramPath, "Parameter name provided was null");
 
-	abstract boolean supportsMediaType(MediaType mediaType);
+		if (paramPath.isBlank())
+			throw new IllegalArgumentException(
+					"Path parameter for @" + BodyParam.class.getSimpleName() + " is null or blank");
+
+		if (paramPath.startsWith(".") || paramPath.endsWith("."))
+			throw new IllegalArgumentException(
+					"Path parameter for @" + BodyParam.class.getSimpleName() + " cannot begin or end with a period");
+
+		final String[] paramPathParts = paramPath.split("\\.");
+
+		for (String paramNamePart : paramPathParts)
+			if (paramNamePart.isBlank())
+				throw new IllegalArgumentException(
+						"Path " + paramPath + " is not a valid path value for @" + BodyParam.class.getSimpleName());
+
+		return Arrays.stream(paramPathParts)
+				.collect(Collectors.toList());
+	}
 }

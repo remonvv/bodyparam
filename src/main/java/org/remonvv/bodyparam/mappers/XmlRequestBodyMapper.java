@@ -19,31 +19,39 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.remonvv.bodyparam;
+package org.remonvv.bodyparam.mappers;
 
-public abstract class NameMatchingUtils {
-	private NameMatchingUtils() {
-		/* prevent instantiation */
+import java.lang.reflect.Type;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.remonvv.bodyparam.RequestBodyMapper;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JavaType;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+
+public class XmlRequestBodyMapper implements RequestBodyMapper {
+	private ObjectMapper objectMapper = XmlMapper.builder().build();
+
+	@Override
+	public Object convertValue(Type paramType, Object value) {
+		JavaType javaType = this.objectMapper.getTypeFactory().constructType(paramType);
+
+		return this.objectMapper.convertValue(value, javaType);
 	}
 
-	static boolean isNameMatching(String a, String b, NameMatchingMode nameMatchingMode) {
-		switch (nameMatchingMode) {
-		case EXACT:
-			return a.equals(b);
-		case IGNORE_CASE:
-			return a.equalsIgnoreCase(b);
-		case IGNORE_CASE_AND_NON_ALPHA_NUMERIC:
-			return equalsIgnoreCaseAndNonLiterals(a, b);
-		default:
+	@Override
+	public Map<String, Object> mapRequestBody(String requestBody) {
+		TypeReference<HashMap<String, Object>> typeRef = new TypeReference<HashMap<String, Object>>() {};
+		try {
+			return this.objectMapper.readValue(requestBody, typeRef);
+		} catch (JsonProcessingException e) {
 			throw new IllegalArgumentException(
-					"Name matching mode " + nameMatchingMode + " is not currently supported.");
+					"Request body \"" + requestBody + "\" is not valid JSON and cannot be decoded");
 		}
 	}
 
-	private static boolean equalsIgnoreCaseAndNonLiterals(String a, String b) {
-		String simplifiedA = a.replaceAll("[^a-zA-Z0-9]", "");
-		String simplifiedB = b.replaceAll("[^a-zA-Z0-9]", "");
-
-		return simplifiedA.equalsIgnoreCase(simplifiedB);
-	}
 }
