@@ -108,14 +108,28 @@ public class BodyParamArgumentResolver implements HandlerMethodArgumentResolver 
 			return bodyParamAnnotation.nameMatchingMode();
 
 		// Check if method is annotated with name matching annotation first
-		if (parameter.hasMethodAnnotation(NameMatching.class))
-			return parameter.getMethodAnnotation(NameMatching.class).mode();
+		if (parameter.hasMethodAnnotation(NameMatching.class)) {
+			NameMatchingMode modeParam = parameter.getMethodAnnotation(NameMatching.class).mode();
+			NameMatchingMode valueParam = parameter.getMethodAnnotation(NameMatching.class).value();
+
+			if (modeParam != NameMatching.DEFAULT_MODE)
+				return modeParam;
+			if (valueParam != NameMatching.DEFAULT_MODE)
+				return valueParam;
+		}
 
 		Class<?> declaringClass = parameter.getDeclaringClass();
 
 		// Finally, check if the type has a name matching annotation
-		if (declaringClass.isAnnotationPresent(NameMatching.class))
-			return declaringClass.getAnnotation(NameMatching.class).mode();
+		if (declaringClass.isAnnotationPresent(NameMatching.class)) {
+			NameMatchingMode modeParam = declaringClass.getAnnotation(NameMatching.class).mode();
+			NameMatchingMode valueParam = declaringClass.getAnnotation(NameMatching.class).value();
+
+			if (modeParam != NameMatching.DEFAULT_MODE)
+				return modeParam;
+			if (valueParam != NameMatching.DEFAULT_MODE)
+				return valueParam;
+		}
 
 		// No overrides found, so use default
 		return NameMatching.DEFAULT_MODE;
