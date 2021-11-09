@@ -21,25 +21,29 @@
  */
 package org.remonvv.bodyparam;
 
-import java.util.List;
-
-import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.web.method.support.HandlerMethodArgumentResolver;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-
-@Configuration
-@ConditionalOnWebApplication
-public class BodyParamArgumentResolverConfiguration implements WebMvcConfigurer {
-
-	private final BodyParamReader bodyParamReader;
-
-	public BodyParamArgumentResolverConfiguration(BodyParamReader bodyParamReader) {
-		this.bodyParamReader = bodyParamReader;
+public abstract class NameMatchingUtils {
+	private NameMatchingUtils() {
+		/* prevent instantiation */
 	}
 
-	@Override
-	public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
-		resolvers.add(new BodyParamArgumentResolver(this.bodyParamReader));
+	static boolean isNameMatching(String a, String b, NameMatchingMode nameMatchingMode) {
+		switch (nameMatchingMode) {
+		case EXACT:
+			return a.equals(b);
+		case IGNORE_CASE:
+			return a.equalsIgnoreCase(b);
+		case IGNORE_CASE_AND_NON_ALPHA_NUMERIC:
+			return equalsIgnoreCaseAndNonLiterals(a, b);
+		default:
+			throw new IllegalArgumentException(
+					"Name matching mode " + nameMatchingMode + " is not currently supported.");
+		}
+	}
+
+	private static boolean equalsIgnoreCaseAndNonLiterals(String a, String b) {
+		String simplifiedA = a.replaceAll("[^a-zA-Z0-9]", "");
+		String simplifiedB = b.replaceAll("[^a-zA-Z0-9]", "");
+
+		return simplifiedA.equalsIgnoreCase(simplifiedB);
 	}
 }
